@@ -428,6 +428,7 @@ html,body{height:100%;overflow:hidden;background:#202632}
   .count{bottom:30px!important;font-size:14px!important}
 }
 </style>
+<style>.stage #story .hs{overflow-x:hidden!important;touch-action:pan-y;overscroll-behavior-x:none}</style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute">
@@ -802,6 +803,7 @@ html,body{height:100%;overflow:hidden;background:#202632}
       e=p; }
     return [x,y]; }
   function build(){
+    document.querySelectorAll('#story .hs').forEach(h=>{h.scrollLeft=0;if(!h.__lk){h.__lk=1;h.addEventListener('scroll',()=>{if(h.scrollLeft)h.scrollLeft=0;},{passive:true});}});
     const cols=[...document.querySelectorAll('.board > .col')];
     cols.forEach((col,k)=>{
       const c=COACH[k]; if(!c) return;
@@ -825,6 +827,7 @@ html,body{height:100%;overflow:hidden;background:#202632}
     });
   }
   window.__coachBuild=build;
+
   setTimeout(build,350); addEventListener('resize',()=>setTimeout(build,120));
   if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>setTimeout(build,50));
   addEventListener('load',()=>setTimeout(build,50));
