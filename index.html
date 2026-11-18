@@ -796,6 +796,11 @@ html,body{height:100%;overflow:hidden;background:#202632}
 <script>
 (function(){
   const COACH=[null, {"t": ".store", "title": "자주 가는 이마트 천안점,<br>관심매장으로 한눈에", "desc": "매장 탭 첫 화면에서 천안점 영업 정보와 오늘 마감되는 행사를 바로 확인할 수 있어요.", "btn": "천안점 행사 보기", "pad": 6, "r": 24}, {"t": "#excl .ev", "title": "천안점에서만 하는 행사,<br>이제 앱에서 미리 확인해요", "desc": "매장에 가야만 알 수 있던 개별 점포의 오프라인 행사(끝장가격·특별혜택·와인장터 등)를 방문 전에 확인하고 장보기 계획을 세울 수 있어요.", "btn": "천안점 단독 행사 보기", "pad": 6, "r": 22}, {"t": ".aibest", "title": "AI가 사은품까지 채울<br>상품을 추천해 드려요", "desc": "AI가 장보기 목록과 평소 구매 이력을 분석해, 남은 금액을 채울 나에게 필요한 상품을 골라 추천해요.", "btn": "추천 상품 담기", "pad": 6, "r": 20}, {"t": "#giftsteps", "title": "오프라인 행사 인정 금액,<br>한 번에 확인해요", "desc": "천안점 결제 금액별 사은품 단계를 앱에서 미리 보고, 각 사은품까지 남은 금액을 한눈에 확인할 수 있어요.", "pad": 6, "r": 20}, {"t": ".draw", "title": "매장에 안 와도<br>천안점 경품에 응모해요", "desc": "지금까지는 천안점에 방문해야만 응모할 수 있었어요. 이제 온라인 천안점 주문과 매장 결제 모두 응모권이 쌓여요.", "btn": "응모하기", "pad": 6, "r": 24}, {"t": "#story .hs", "title": "AI가 내 취향에 맞는<br>천안점 이야기를 먼저 보여줘요", "desc": "관심 카테고리와 최근 조회·구매 이력을 분석해, 위스키 팝업이나 김장 특집처럼 나에게 맞는 이야기를 먼저 보여줘요.", "btn": "이야기 보러가기", "pad": 6, "r": 24}, {"t": ".fbar", "title": "천안점 행사를<br>한곳에 모아 골라보세요", "desc": "천안점 단독·오늘 마감·사은품 등 원하는 행사만 골라서 미리 장보기 계획을 세워요.", "btn": "행사 골라보기", "pad": 4, "r": 22}, {"t": ".wh-info", "title": "방문 전에 위치와<br>구매 정보를 미리 확인해요", "desc": "팝업 위치와 구매 조건을 확인하고, 하단 버튼으로 매장 안 위치를 바로 찾아갈 수 있어요.", "btn": "매장 위치 보기", "pad": 6, "r": 22}, {"t": ".wh-guide", "title": "처음이어도<br>나에게 맞는 위스키를 쉽게", "desc": "종류별 특징과 주류 파트너 팁으로, 마시는 방법에 맞는 한 병을 골라보세요.", "btn": "가이드 더 보기", "pad": 6, "r": 20}];
+  function pos(el){ let x=0,y=0,e=el;
+    while(e){ x+=e.offsetLeft; y+=e.offsetTop; const p=e.offsetParent;
+      for(let a=e.parentElement; a && a!==document.body && a!==document.documentElement; a=a.parentElement){ x-=a.scrollLeft; y-=a.scrollTop; if(a===p) break; }
+      e=p; }
+    return [x,y]; }
   function build(){
     const cols=[...document.querySelectorAll('.board > .col')];
     cols.forEach((col,k)=>{
@@ -803,8 +808,8 @@ html,body{height:100%;overflow:hidden;background:#202632}
       const screen=col.querySelector('.screen'); if(!screen) return;
       const old=screen.querySelector('.coach'); if(old) old.remove();
       const t=screen.querySelector(c.t); if(!t) return;
-      const sr=screen.getBoundingClientRect(), z=sr.width/402, tr=t.getBoundingClientRect();
-      let x=(tr.left-sr.left)/z-c.pad, y=(tr.top-sr.top)/z-c.pad, w=tr.width/z+c.pad*2, h=tr.height/z+c.pad*2;
+      const pa=pos(t), pb=pos(screen);
+      let x=pa[0]-pb[0]-c.pad, y=pa[1]-pb[1]-c.pad, w=t.offsetWidth+c.pad*2, h=t.offsetHeight+c.pad*2;
       x=Math.max(8,x); w=Math.min(w,402-8-x);
       const ov=document.createElement('div'); ov.className='coach';
       const hole=document.createElement('div'); hole.className='hole';
@@ -819,7 +824,11 @@ html,body{height:100%;overflow:hidden;background:#202632}
       else { tip.classList.add('up'); tip.style.top=Math.max(60,y-16-th)+'px'; }
     });
   }
-  setTimeout(build,350); addEventListener('resize',()=>setTimeout(build,100));
+  window.__coachBuild=build;
+  setTimeout(build,350); addEventListener('resize',()=>setTimeout(build,120));
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>setTimeout(build,50));
+  addEventListener('load',()=>setTimeout(build,50));
+  if(window.visualViewport) visualViewport.addEventListener('resize',()=>setTimeout(build,120));
 })();
 
 
