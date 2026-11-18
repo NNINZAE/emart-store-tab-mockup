@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>영상 보기</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #000; }
+  body { display: flex; align-items: center; justify-content: center; }
+  video { width: 100%; max-height: 100vh; object-fit: contain; display: block; }
+</style>
+</head>
+<body>
+  <!-- QR로 열면 바로 자동재생(무음 영상이라 모바일에서도 재생됨), 반복 재생 -->
+  <video src="video.mp4" poster="poster.jpg" autoplay muted playsinline loop controls></video>
+</body>
+</html>
